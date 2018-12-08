@@ -6,6 +6,13 @@ provider "aws" {
 
 #---------------------------------------------Modules
 
+#--------------------------------IAM
+
+module "iam" {
+  source = "./iam"
+
+}
+
 #--------------------------------Storage
 
 module "storage" {
@@ -35,31 +42,4 @@ module "compute" {
   subnets         = "${module.networking.public_subnets}"
   security_group  = "${module.networking.public_sg}"
   subnet_ips      = "${module.networking.subnet_ips}"
-}
-
-
-
-#--------------------------------------------------------------IAM
-
-resource "aws_iam_instance_profile" "s3_access_profile" {
-  name = "s3_access"
-  role = "${aws_iam_role.s3_access_role.name}"
-}
-
-resource "aws_iam_role_policy" "s3_access_policy" {
-  name = "s3_access_policy"
-  role = "${aws_iam_role.s3_access_role.id}"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "s3:*",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
 }
